@@ -10,6 +10,7 @@ import Navigation from "@/components/navigation";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import type { NavItem } from "@/lib/types";
+import { useEffect } from "react";
 
 interface MobileNavigationProps {
   isOpen: boolean;
@@ -37,6 +38,49 @@ export default function MobileNavigation({
   const toggleEditMode = () => {
     setIsEditMode(!isEditMode);
   };
+
+  // Prevent body scrolling when the mobile navigation is open
+  useEffect(() => {
+    if (isOpen) {
+      // Save the current scroll position
+      const scrollY = window.scrollY;
+      
+      // Prevent scrolling by fixing the body position
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      
+      return () => {
+        // Restore scrolling when component unmounts or isOpen changes
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        
+        // Restore scroll position
+        window.scrollTo(0, scrollY);
+      };
+    }
+  }, [isOpen]);
+
+  // Prevent touchmove events when in edit mode to avoid conflicts with drag operations
+  useEffect(() => {
+    // Fixed type definition for the event handler
+    const preventScroll = (e: Event) => {
+      if (isEditMode && isOpen) {
+        e.preventDefault();
+      }
+    };
+
+    const navigationArea = document.querySelector('.navigation-scroll-area');
+    
+    if (navigationArea && isEditMode) {
+      navigationArea.addEventListener('touchmove', preventScroll, { passive: false });
+      
+      return () => {
+        navigationArea.removeEventListener('touchmove', preventScroll);
+      };
+    }
+  }, [isEditMode, isOpen]);
 
   return (
     <Box
@@ -116,7 +160,14 @@ export default function MobileNavigation({
           </Box>
         </Box>
 
-        <Box sx={{ overflow: "auto", height: "calc(100% - 120px)" }}>
+        <Box 
+          className="navigation-scroll-area"
+          sx={{ 
+            overflow: "auto", 
+            height: "calc(100% - 120px)",
+            touchAction: isEditMode ? "none" : "auto" 
+          }}
+        >
           <Navigation
             items={items}
             setItems={setItems}
