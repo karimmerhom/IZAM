@@ -1,6 +1,6 @@
 import type { NavItem } from "./types"
 //deployed link
-const API_URL = "http://165.227.171.60:8082"
+const API_URL = "https://production-api.inplace-eg.com"
 
 // const API_URL = "http://localhost:8081"
 
