@@ -1,8 +1,8 @@
 import type { NavItem } from "./types"
-//deployed link
-const API_URL = "https://production-api.inplace-eg.com"
 
-// const API_URL = "http://localhost:8081"
+
+const API_URL = process.env.NEXT_PUBLIC_SERVER_URL
+
 
 export async function fetchNavigation(): Promise<NavItem[]> {
   try {

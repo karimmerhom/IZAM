@@ -335,7 +335,6 @@ function SortableNavItem({
           <>
             {item.target ? (
               <Box
-               // href={item.target}
                 style={{
                   flex: 1,
                   textDecoration: "none",

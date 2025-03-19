@@ -61,6 +61,7 @@ export default function Dashboard() {
         setNavItems(data);
         setOriginalNavItems(JSON.parse(JSON.stringify(data)));
       } catch (error) {
+        toast.error("Failed to load navigation details");
         console.error("Failed to load navigation:", error);
       }
     };
